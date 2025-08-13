@@ -26,11 +26,16 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { init } = usePuterStore();
+  const { init, puterReady, isLoading, error } = usePuterStore();
 
   useEffect(() => {
-    init()
+    console.log('Initializing puter store...');
+    init();
   }, [init]);
+
+  useEffect(() => {
+    console.log('Puter store state:', { puterReady, isLoading, error });
+  }, [puterReady, isLoading, error]);
 
   return (
     <html lang="en">

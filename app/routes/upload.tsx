@@ -40,7 +40,14 @@ const Upload = () => {
             resumePath: uploadedFile.path,
             imagePath: uploadedImage.path,
             companyName, jobTitle, jobDescription,
-            feedback: '',
+            feedback: {
+                overallScore: 0,
+                ATS: { score: 0, tips: [] },
+                toneAndStyle: { score: 0, tips: [] },
+                content: { score: 0, tips: [] },
+                structure: { score: 0, tips: [] },
+                skills: { score: 0, tips: [] }
+            },
         }
         await kv.set(`resume:${uuid}`, JSON.stringify(data));
 
@@ -56,11 +63,17 @@ const Upload = () => {
             ? feedback.message.content
             : feedback.message.content[0].text;
 
-        data.feedback = JSON.parse(feedbackText);
-        await kv.set(`resume:${uuid}`, JSON.stringify(data));
-        setStatusText('Analysis complete, redirecting...');
-        console.log(data);
-        navigate(`/resume/${uuid}`);
+        try {
+            const parsedFeedback = JSON.parse(feedbackText);
+            data.feedback = parsedFeedback;
+            await kv.set(`resume:${uuid}`, JSON.stringify(data));
+            setStatusText('Analysis complete, redirecting...');
+            console.log('Final resume data:', data);
+            navigate(`/resume/${uuid}`);
+        } catch (parseError) {
+            console.error('Failed to parse feedback:', feedbackText, parseError);
+            setStatusText('Error: Failed to parse analysis results');
+        }
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
