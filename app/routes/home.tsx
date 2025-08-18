@@ -43,7 +43,6 @@ export default function Home() {
                 console.log('All KV keys:', allKeys);
                 console.log('All KV items:', allItems);
 
-                // Store debug info
                 setDebugInfo({
                     authStatus: auth.isAuthenticated,
                     user: auth.user,
